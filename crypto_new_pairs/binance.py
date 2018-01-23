@@ -1,9 +1,18 @@
 import requests
-import pickle
-from api_keys import SAMPLE_NAME
+import pickle 
+from twilio.rest import Client
+from api_keys import *
+
+client = Client(ACCOUNT_SID, AUTH_TOKEN)
 
 r = requests.get('https://api.binance.com/api/v3/ticker/bookTicker')
 data = r.json()
+
+def send_message():
+    client.messages.create(
+        to=TO_NUMBER, 
+        from_=FROM_NUMBER,
+        body=coin_list)
 
 currency_pairs = []
 for item in data:
@@ -15,9 +24,8 @@ current_coins = pickle.load(open("save.p", "rb"))
 difference = set(currency_pairs) - set(current_coins)
 
 if difference != set():
+    coin_list = 'Binance added: '
     for coin in difference:
-        print(coin)
-
-
-
-print(SAMPLE_NAME)
+        coin_list += coin + ' '
+    print(coin_list)
+    send_message()
