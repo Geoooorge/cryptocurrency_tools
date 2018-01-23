@@ -1,5 +1,6 @@
 import requests
 import pickle
+from api_keys import SAMPLE_NAME
 
 r = requests.get('https://api.binance.com/api/v3/ticker/bookTicker')
 data = r.json()
@@ -14,8 +15,9 @@ current_coins = pickle.load(open("save.p", "rb"))
 difference = set(currency_pairs) - set(current_coins)
 
 if difference != set():
-    for u in difference:
-        print(u)
+    for coin in difference:
+        print(coin)
 
 
 
+print(SAMPLE_NAME)
