@@ -17,9 +17,15 @@ def send_message():
 currency_pairs = []
 for item in data:
     currency_pairs.append(item['symbol'])
-# currency_pairs.remove('123456')
-# initial_save = pickle.dump(currency_pairs, open("save.p", "wb"))
-current_coins = pickle.load(open("save.p", "rb"))
+
+try:
+    with open('save.p', 'rb') as f:
+        current_coins = pickle.load(f)
+except (OSError, IOError) as e:
+    with open('save.p', 'wb') as f:
+        pickle.dump(currency_pairs, f, protocol=pickle.HIGHEST_PROTOCOL)
+    print('Initial coin pair list has been populated')
+    quit()
 
 difference = set(currency_pairs) - set(current_coins)
 
@@ -29,3 +35,6 @@ if difference != set():
         coin_list += coin + ' '
     print(coin_list)
     send_message()
+
+    with open('save.p', 'wb') as f:
+        pickle.dump(currency_pairs, f, protocol=pickle.HIGHEST_PROTOCOL)
